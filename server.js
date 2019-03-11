@@ -18,7 +18,7 @@ var connect = () => {
   return connection;
 }
 
-app.get('/Persons', (req, res) => {
+app.get('/persons', (req, res) => {
   var connection = connect();
   connection.query('select * from People', (err, rows, fields) => {
     if (!err) {
@@ -30,7 +30,7 @@ app.get('/Persons', (req, res) => {
   })
 })
 
-app.post('/Persons', function (req, res, next) {
+app.post('/persons', function (req, res, next) {
   var connection = connect();
   var query = `INSERT into People (name,surname,company) values ('${req.body.name}', '${req.body.surname}', '${req.body.company}')`;
   connection.query(query, function (error, results, fields) {
@@ -39,7 +39,7 @@ app.post('/Persons', function (req, res, next) {
   });
 });
 
-app.put('/Persons/:id', (req, res) => {
+app.put('/persons/:id', (req, res) => {
   var connection = connect();
   var query = `UPDATE People SET name='${req.body.name}', surname='${req.body.surname}', company='${req.body.company}' WHERE id='${req.params.id}'`;
   connection.query(query, function (error, results, fields) {
