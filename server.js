@@ -18,9 +18,8 @@ var connect = () => {
   return connection;
 }
 
-app.get('/persons', (req, res) => {
-  var connection = connect();
-  connection.query('select * from People', (err, rows, fields) => {
+var select = (connection, res) => {
+  connection.query('SELECT * from People', (err, rows, fields) => {
     if (!err) {
       res.send(rows);
     } else {
@@ -28,6 +27,11 @@ app.get('/persons', (req, res) => {
     }
     connection.end();
   })
+};
+
+app.get('/persons', (req, res) => {
+  var connection = connect();
+  select(connection, res);
 })
 
 app.post('/persons', function (req, res, next) {
@@ -35,8 +39,9 @@ app.post('/persons', function (req, res, next) {
   var query = `INSERT into People (name,surname,company) values ('${req.body.name}', '${req.body.surname}', '${req.body.company}')`;
   connection.query(query, function (error, results, fields) {
     if (error) throw error;
-    res.send({});
+    select(connection, res);
   });
+
 });
 
 app.put('/persons/:id', (req, res) => {
@@ -44,7 +49,7 @@ app.put('/persons/:id', (req, res) => {
   var query = `UPDATE People SET name='${req.body.name}', surname='${req.body.surname}', company='${req.body.company}' WHERE id='${req.params.id}'`;
   connection.query(query, function (error, results, fields) {
     if (error) throw error;
-    res.send({});
+    select(connection, res);
   });
 });
 
@@ -53,7 +58,7 @@ app.delete('/persons/:id', function (req, res, next) {
   var query = `DELETE from People where id = '${req.params.id}'`;
   connection.query(query, function (error, results, fields) {
     if (error) throw error;
-    res.send({});
+    select(connection, res);
   });
 });
 
